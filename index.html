@@ -1,0 +1,114 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SocialSim AI - Social & Dating Simulator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+            },
+            colors: {
+              // Custom Palette
+              dark: {
+                950: '#151b25',
+                900: '#212B38', // Deep Background
+                800: '#37465B', // Card/Surface
+                700: '#4B5E76', // Borders
+              },
+              primary: {
+                DEFAULT: '#726EFF', // Purple Highlight
+                hover: '#5B57D9',
+                light: '#A5A3FF',
+              },
+              teal: {
+                DEFAULT: '#0BC6AB', // Success/Primary Text
+                dim: 'rgba(11, 198, 171, 0.1)',
+              },
+              neon: {
+                DEFAULT: '#5AFFE7', // High Accent
+              },
+              brand: { // Mapping old brand to new primary for compatibility
+                50: '#f0f9ff',
+                100: '#e0f2fe',
+                500: '#726EFF', 
+                600: '#5B57D9',
+                900: '#212B38',
+              }
+            },
+            animation: {
+              'float': 'float 6s ease-in-out infinite',
+              'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'flip': 'flip 0.6s preserve-3d',
+            },
+            keyframes: {
+              float: {
+                '0%, 100%': { transform: 'translateY(0)' },
+                '50%': { transform: 'translateY(-10px)' },
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body {
+        background-color: #212B38;
+        color: #f8fafc;
+      }
+      /* Custom scrollbar */
+      .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+      }
+      .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+      }
+      .typing-dot {
+        animation: typing 1.4s infinite ease-in-out both;
+      }
+      .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+      .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+      
+      @keyframes typing {
+        0%, 80%, 100% { transform: scale(0); }
+        40% { transform: scale(1); }
+      }
+
+      /* 3D Flip Card Utilities */
+      .perspective-1000 {
+        perspective: 1000px;
+      }
+      .transform-style-3d {
+        transform-style: preserve-3d;
+      }
+      .backface-hidden {
+        backface-visibility: hidden;
+      }
+      .rotate-y-180 {
+        transform: rotateY(180deg);
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.554.0"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
