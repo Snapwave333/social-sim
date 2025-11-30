@@ -148,6 +148,44 @@ export const generateHint = async (
 };
 
 /**
+ * Generates a 3-step breakdown for a scenario to help with executive dysfunction.
+ */
+export const generateScenarioBreakdown = async (
+    apiKey: string,
+    scenario: Scenario
+): Promise<string[]> => {
+    const ai = new GoogleGenAI({ apiKey });
+
+    const prompt = `
+        Scenario: ${scenario.title}
+        Description: ${scenario.description}
+        Goal: Break this social interaction down into 3 extremely simple, actionable micro-steps.
+        These steps should help someone with anxiety or executive dysfunction know exactly what to do first, second, and third.
+        Format: Return ONLY a JSON array of 3 strings. Max 5 words per step.
+        Example: ["Make eye contact", "Say hello", "Ask one question"]
+    `;
+
+    try {
+        const response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: prompt,
+            config: {
+                responseMimeType: "application/json",
+            }
+        });
+
+        const text = response.text;
+        if (!text) return ["Initiate Protocol", "Observe Data", "Execute Response"];
+        const parsed = JSON.parse(text);
+        if (Array.isArray(parsed)) return parsed.slice(0, 3);
+        return ["Step 1: Focus", "Step 2: Listen", "Step 3: Respond"];
+    } catch (e) {
+        console.error("Failed to generate breakdown", e);
+        return ["Initiate Contact", "Listen Active", "Respond Calmly"];
+    }
+};
+
+/**
  * Generates a high-quality single static portrait for the character.
  * Uses Gemini 2.5 Flash Image ("Nano Banana").
  */

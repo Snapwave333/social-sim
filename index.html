@@ -4,53 +4,58 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SocialSim AI - Social & Dating Simulator</title>
+    <title>HYPER_CRUNCH // SocialSim</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <script>
       tailwind.config = {
         theme: {
           extend: {
             fontFamily: {
-              sans: ['Inter', 'sans-serif'],
+              display: ['"Archivo Black"', 'sans-serif'],
+              mono: ['"Space Mono"', 'monospace'],
             },
             colors: {
-              // Custom Palette
-              dark: {
-                950: '#151b25',
-                900: '#212B38', // Deep Background
-                800: '#37465B', // Card/Surface
-                700: '#4B5E76', // Borders
-              },
-              primary: {
-                DEFAULT: '#726EFF', // Purple Highlight
-                hover: '#5B57D9',
-                light: '#A5A3FF',
-              },
-              teal: {
-                DEFAULT: '#0BC6AB', // Success/Primary Text
-                dim: 'rgba(11, 198, 171, 0.1)',
-              },
-              neon: {
-                DEFAULT: '#5AFFE7', // High Accent
-              },
-              brand: { // Mapping old brand to new primary for compatibility
-                50: '#f0f9ff',
-                100: '#e0f2fe',
-                500: '#726EFF', 
-                600: '#5B57D9',
-                900: '#212B38',
-              }
+              void: '#050505',
+              concrete: '#f0f0f0',
+              acid: '#CCFF00', // Neon Yellow/Green
+              hot: '#FF0099',  // Hot Magenta
+              cyan: '#00FFFF', // Cyan
+              hazard: '#FF3300', // Red/Orange
+              deep: '#212B38', // Deep Background
+              electric: '#0BC6AB', // Electric Green
+              hyperblue: '#726EFF', // Vibrant Blue
+              // Dark mode specific scales
+              'dark-900': '#000000',
+              'dark-800': '#121212',
+              'dark-700': '#1E1E1E',
+            },
+            boxShadow: {
+              'hard': '4px 4px 0px 0px #000000',
+              'hard-white': '4px 4px 0px 0px #FFFFFF',
+              'hard-lg': '8px 8px 0px 0px #000000',
+              'hard-xl': '12px 12px 0px 0px #000000',
+            },
+            backgroundImage: {
+              'stripes': 'repeating-linear-gradient(45deg, #000 0, #000 2px, transparent 0, transparent 50%)',
+              'stripes-white': 'repeating-linear-gradient(45deg, #fff 0, #fff 2px, transparent 0, transparent 50%)',
             },
             animation: {
-              'float': 'float 6s ease-in-out infinite',
-              'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-              'flip': 'flip 0.6s preserve-3d',
+              'glitch': 'glitch 1s linear infinite',
+              'snap-in': 'snapIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
+              'flicker': 'flicker 0.1s steps(2) infinite',
             },
             keyframes: {
-              float: {
-                '0%, 100%': { transform: 'translateY(0)' },
-                '50%': { transform: 'translateY(-10px)' },
+              snapIn: {
+                '0%': { transform: 'scale(0.8) translateY(20px)', opacity: '0' },
+                '100%': { transform: 'scale(1) translateY(0)', opacity: '1' },
+              },
+              flicker: {
+                '0%': { opacity: '1' },
+                '50%': { opacity: '0.3' },
+                '100%': { opacity: '1' },
               }
             }
           }
@@ -59,29 +64,134 @@
     </script>
     <style>
       body {
-        background-color: #212B38;
-        color: #f8fafc;
+        background-color: #050505; /* VOID DEFAULT */
+        color: #ffffff;
+        overflow: hidden; /* Prevent body scroll, handle in app */
+        transition: filter 0.5s ease;
       }
-      /* Custom scrollbar */
-      .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-      }
-      .scrollbar-hide {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-      }
-      .typing-dot {
-        animation: typing 1.4s infinite ease-in-out both;
-      }
-      .typing-dot:nth-child(1) { animation-delay: -0.32s; }
-      .typing-dot:nth-child(2) { animation-delay: -0.16s; }
       
-      @keyframes typing {
-        0%, 80%, 100% { transform: scale(0); }
-        40% { transform: scale(1); }
+      /* THE NOISE FLOOR */
+      .noise-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        pointer-events: none;
+        z-index: 9999;
+        opacity: 0.05;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E");
       }
 
-      /* 3D Flip Card Utilities */
+      /* WALLPAPER LAYER */
+      #wallpaper-layer {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: -1;
+        background-size: cover;
+        background-position: center;
+        opacity: 0.15; /* Subtle bleed through */
+        filter: grayscale(100%) contrast(1.2);
+        transition: opacity 0.5s ease;
+      }
+
+      /* Custom scrollbar - Brutalist Block Dark */
+      ::-webkit-scrollbar {
+        width: 12px;
+        background: #050505;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #CCFF00;
+        border: 2px solid #050505;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #FF0099;
+      }
+
+      .text-stroke {
+        -webkit-text-stroke: 1px #000;
+      }
+      
+      .text-stroke-white {
+        -webkit-text-stroke: 1px #fff;
+      }
+
+      .pattern-dots {
+        background-image: radial-gradient(#fff 1px, transparent 1px);
+        background-size: 8px 8px;
+      }
+
+      /* DATA STREAM BORDER */
+      :root {
+        --border-color-primary: #FFFFFF;
+        --border-color-active: #0BC6AB;
+        --stream-speed: 4s;
+      }
+
+      .data-stream-border {
+        position: relative;
+        /* We simulate the border with background gradients so we can animate it */
+        background: 
+          linear-gradient(90deg, var(--border-color-primary) 50%, transparent 50%) top repeat-x,
+          linear-gradient(90deg, var(--border-color-primary) 50%, transparent 50%) bottom repeat-x,
+          linear-gradient(0deg, var(--border-color-primary) 50%, transparent 50%) left repeat-y,
+          linear-gradient(0deg, var(--border-color-primary) 50%, transparent 50%) right repeat-y;
+        background-size: 16px 4px, 16px 4px, 4px 16px, 4px 16px;
+        animation: border-march var(--stream-speed) linear infinite;
+        padding: 4px; /* Simulates the border width */
+      }
+
+      .data-stream-border.processing {
+        --border-color-primary: #0BC6AB;
+        --stream-speed: 0.5s;
+      }
+
+      @keyframes border-march {
+        0% { background-position: 0 0, 0 100%, 0 0, 100% 0; }
+        100% { background-position: 32px 0, -32px 100%, 0 -32px, 100% 32px; }
+      }
+
+      /* FOCUS HUM */
+      .focus-hum:focus-within {
+        animation: border-hum 3s ease-in-out infinite;
+      }
+      @keyframes border-hum {
+        0%, 100% { border-color: #ffffff; }
+        50% { border-color: #726EFF; }
+      }
+
+      /* LEVEL FLICKER */
+      .level-up-flicker {
+        animation: glitch-text 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
+        color: #0BC6AB;
+      }
+      @keyframes glitch-text {
+        0% { transform: translate(0) }
+        20% { transform: translate(-2px, 2px) }
+        40% { transform: translate(-2px, -2px) }
+        60% { transform: translate(2px, 2px) }
+        80% { transform: translate(2px, -2px) }
+        100% { transform: translate(0) }
+      }
+
+      /* SCROLL TENSION */
+      .scroll-tension {
+        overscroll-behavior: contain;
+      }
+      
+      /* GLOBAL SENSORY OVERLAYS */
+      .filter-calm {
+        filter: contrast(0.8) saturate(0.5) brightness(0.9) sepia(0.2) hue-rotate(180deg);
+      }
+      
+      .filter-mono {
+        filter: grayscale(100%) contrast(1.2);
+      }
+
+      /* 3D FLIP CARD UTILS */
       .perspective-1000 {
         perspective: 1000px;
       }
@@ -94,6 +204,7 @@
       .rotate-y-180 {
         transform: rotateY(180deg);
       }
+
     </style>
   <script type="importmap">
 {
@@ -108,6 +219,8 @@
 </script>
 </head>
   <body>
+    <div class="noise-overlay"></div>
+    <div id="wallpaper-layer"></div>
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
   </body>

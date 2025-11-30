@@ -1,7 +1,7 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { ChatMessage } from '../types';
-import { User, BrainCircuit } from 'lucide-react';
+import { User, Terminal } from 'lucide-react';
 
 interface ChatBubbleProps {
   message: ChatMessage;
@@ -10,94 +10,92 @@ interface ChatBubbleProps {
   avatarVideoUrl?: string;
   isLatestModelMessage?: boolean;
   isSpeaking?: boolean;
-  animationSpeed?: number;
+  isLoading?: boolean;
 }
 
 const ChatBubble: React.FC<ChatBubbleProps> = ({ 
     message, 
     partnerName, 
     avatarUrl, 
-    avatarVideoUrl, 
     isLatestModelMessage, 
-    isSpeaking
+    isSpeaking,
+    isLoading
 }) => {
   const isUser = message.role === 'user';
   
-  // Video State
-  const [videoError, setVideoError] = useState(false);
-  const [isVideoLoading, setIsVideoLoading] = useState(true);
-
-  // Priority: Idle Video Loop (if available, not error) -> Static AI Generated Image
-  const showVideoLoop = avatarVideoUrl && !videoError;
-
   return (
-    <div className={`flex w-full mb-6 animate-in slide-in-from-bottom-2 duration-300 ${isUser ? 'justify-end' : 'justify-start'}`}>
-      <div className={`flex max-w-[85%] md:max-w-[70%] ${isUser ? 'flex-row-reverse' : 'flex-row'} items-end gap-3`}>
+    <div className={`flex w-full mb-8 ${isUser ? 'justify-end' : 'justify-start'}`}>
+      <div className={`
+        flex max-w-[90%] md:max-w-[75%] 
+        ${isUser ? 'flex-row-reverse' : 'flex-row'} 
+        items-end gap-0 
+        animate-snap-in 
+        ${isUser ? 'origin-bottom-right' : 'origin-bottom-left'}
+        will-change-transform
+      `}>
         
-        {/* Avatar Container */}
-        <div className="flex-shrink-0 relative">
+        {/* Avatar Block */}
+        <div className={`w-14 h-14 border-4 border-white flex-shrink-0 relative overflow-hidden bg-deep z-10 ${isUser ? 'ml-[-4px]' : 'mr-[-4px]'}`}>
           {isUser ? (
-            <div className="w-10 h-10 rounded-full bg-dark-700 flex items-center justify-center text-primary-light shadow-lg border border-dark-600">
-              <User size={20} />
+            <div className="w-full h-full bg-cyan flex items-center justify-center">
+              <User size={28} className="text-black" strokeWidth={2.5} />
             </div>
           ) : (
-            <div className={`w-12 h-12 rounded-full shadow-lg border-2 border-dark-800 overflow-hidden relative bg-dark-700 transition-transform duration-100 ${isSpeaking && isLatestModelMessage ? 'ring-2 ring-neon ring-offset-2 ring-offset-dark-900' : ''}`}>
-                 
-                 {showVideoLoop ? (
-                    <>
-                        {isVideoLoading && (
-                            <div className="absolute inset-0 bg-dark-800 flex items-center justify-center">
-                                <div className="w-4 h-4 border-2 border-neon border-t-transparent rounded-full animate-spin"></div>
-                            </div>
-                        )}
-                        <video 
-                            src={avatarVideoUrl} 
-                            autoPlay 
-                            loop 
-                            muted 
-                            playsInline
-                            onLoadedData={() => setIsVideoLoading(false)}
-                            onError={(e) => {
-                                console.error("Video avatar failed to load", e);
-                                setVideoError(true);
-                                setIsVideoLoading(false);
-                            }}
-                            className={`w-full h-full object-cover will-change-transform ${isVideoLoading ? 'opacity-0' : 'opacity-100'}`}
-                        />
-                    </>
-                 ) : (
-                    // High Quality Static Image Rendering
-                    <>
-                        <img 
-                            src={avatarUrl} 
-                            alt={partnerName} 
-                            className={`w-full h-full object-cover`}
-                        />
-                        {/* Subtle Glow Pulse when Speaking */}
-                        {isSpeaking && isLatestModelMessage && (
-                             <div className="absolute inset-0 bg-neon/30 animate-pulse mix-blend-overlay" />
-                        )}
-                    </>
-                 )}
-            </div>
+            <>
+                <img 
+                    src={avatarUrl} 
+                    alt={partnerName} 
+                    className="w-full h-full object-cover filter grayscale contrast-125"
+                />
+                {isSpeaking && isLatestModelMessage && (
+                     <div className="absolute inset-0 bg-acid/40 animate-pulse" />
+                )}
+            </>
           )}
         </div>
 
         {/* Message Content */}
-        <div className="flex flex-col gap-1">
-            <div className={`px-5 py-3 rounded-2xl shadow-md text-sm md:text-base leading-relaxed relative border
-              ${isUser 
-                ? 'bg-primary text-white rounded-br-none border-primary' 
-                : 'bg-dark-800 text-gray-200 rounded-bl-none border-dark-700'
-              }`}>
-              {message.text}
+        <div className="flex flex-col">
+            {/* Name Tag */}
+            {!isUser && (
+                <div className="self-start bg-white text-black px-2 py-0.5 text-[10px] font-mono font-bold uppercase tracking-widest mb-[-4px] z-20 relative ml-4">
+                    {partnerName}
+                </div>
+            )}
+
+            <div className={`
+                p-6 border-4 border-white shadow-hard-white relative z-0 min-w-[120px]
+                ${isUser 
+                    ? 'bg-acid text-black' 
+                    : 'bg-deep text-white'
+                }
+            `}>
+              {isLoading ? (
+                <div className="flex flex-col gap-2">
+                  <div className="flex gap-2 items-center h-4">
+                    <div className="w-3 h-3 bg-white animate-bounce [animation-delay:-0.3s]"></div>
+                    <div className="w-3 h-3 bg-white animate-bounce [animation-delay:-0.15s]"></div>
+                    <div className="w-3 h-3 bg-white animate-bounce"></div>
+                  </div>
+                  <span className="font-mono text-[10px] tracking-widest opacity-60 animate-pulse">PROCESSING...</span>
+                </div>
+              ) : (
+                <p className="font-mono text-sm md:text-base font-bold leading-relaxed whitespace-pre-wrap">
+                    {message.text}
+                </p>
+              )}
             </div>
             
-            {/* Internal Thought (Visible for Model messages if present) */}
-            {!isUser && message.internalThought && (
-               <div className="text-xs text-gray-500 italic ml-2 flex items-center gap-1">
-                 <BrainCircuit size={12} className="text-primary-light" />
-                 <span>Thought: "{message.internalThought}"</span>
+            {/* Internal Thought - Brutalist Style */}
+            {!isUser && !isLoading && message.internalThought && (
+               <div className="mt-2 ml-1 border-l-4 border-white pl-3 py-1 opacity-70 hover:opacity-100 transition-opacity">
+                 <div className="flex items-center gap-1 text-[10px] font-mono font-bold uppercase mb-1 text-gray-300">
+                    <Terminal size={12} />
+                    <span>Processing Logic...</span>
+                 </div>
+                 <p className="font-mono text-xs italic text-gray-400">
+                    "{message.internalThought}"
+                 </p>
                </div>
             )}
         </div>

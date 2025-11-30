@@ -21,6 +21,12 @@ export interface Achievement {
   xpReward: number;
 }
 
+export interface MoodLog {
+  timestamp: number;
+  emoji: string; // 😔, 😐, 🙂
+  tag: string;   // "Stressed", "Neutral", "Focused"
+}
+
 export interface UserProgress {
   level: number;
   currentXp: number;
@@ -29,7 +35,8 @@ export interface UserProgress {
   totalMessagesSent: number;
   highestRapport: number;
   sessionsCompleted: number;
-  tutorialCompleted: boolean; // New flag for the starter course
+  tutorialCompleted: boolean; 
+  moodHistory: MoodLog[]; // New: Emotional Thermometer Data
 }
 
 export interface Scenario {
@@ -41,18 +48,18 @@ export interface Scenario {
   systemPrompt: string;
   initialMessage: string;
   avatarUrl: string;
-  avatarVideoUrl?: string; // New: Looping video URL for idle state
+  avatarVideoUrl?: string; 
   partnerName: string;
-  gender?: PartnerGender; // Optional, set at runtime based on user choice
-  requiredLevel?: number; // Level required to unlock this character/scenario
+  gender?: PartnerGender; 
+  requiredLevel?: number; 
 }
 
 export interface FeedbackData {
   tone: string;
-  score: number; // 0-100 rapport score
+  score: number; 
   feedback: string;
-  socialCues: string[]; // List of observed cues or missed cues
-  suggestion: string; // Suggested next move if asked
+  socialCues: string[]; 
+  suggestion: string; 
 }
 
 export interface ChatMessage {
@@ -60,9 +67,7 @@ export interface ChatMessage {
   role: 'user' | 'model';
   text: string;
   timestamp: number;
-  // Metadata attached to model responses for the feedback panel
   analysis?: FeedbackData; 
-  // Internal thought of the character (hidden from main view, shown in debug/learning mode)
   internalThought?: string;
 }
 
@@ -84,17 +89,16 @@ export interface SavedSession {
   previewText: string;
 }
 
-// Quiz Types
 export interface QuizOption {
   id: string;
   text: string;
   isCorrect: boolean;
-  explanation: string; // Why this answer is right or wrong
+  explanation: string; 
 }
 
 export interface QuizQuestion {
   id: number;
   question: string;
-  context: string; // Brief lesson or scenario setup
+  context: string; 
   options: QuizOption[];
 }
